@@ -1,12 +1,13 @@
-import type { BingoSquareData } from '../types';
+﻿import type { BingoSquareData } from '../types';
 import { BingoBoard } from './BingoBoard';
 
-interface GameScreenProps {
+import type { Resettable } from '../types';
+
+interface GameScreenProps extends Resettable {
   board: BingoSquareData[];
   winningSquareIds: Set<number>;
   hasBingo: boolean;
   onSquareClick: (squareId: number) => void;
-  onReset: () => void;
 }
 
 export function GameScreen({
@@ -17,33 +18,31 @@ export function GameScreen({
   onReset,
 }: GameScreenProps) {
   return (
-    <div className="flex flex-col min-h-full bg-gray-50">
-      {/* Header */}
-      <header className="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+    <div className="relative min-h-full p-4 md:p-6">
+      <div className="grid-overlay"></div>
+
+      <header className="relative z-10 flex items-center justify-between py-2 px-4 md:px-6 bg-surface/80 border border-white/10 rounded-2xl backdrop-blur-sm mb-3">
         <button
           onClick={onReset}
-          className="text-gray-500 text-sm px-3 py-1.5 rounded active:bg-gray-100"
+          className="text-muted text-sm font-semibold px-3 py-1.5 uppercase tracking-wider rounded bg-white/5 hover:bg-white/10"
         >
           ← Back
         </button>
-        <h1 className="font-bold text-gray-900">Soc Ops</h1>
+        <h1 className="grotesque-heading text-3xl md:text-4xl font-extrabold text-accent">Soc Ops</h1>
         <div className="w-16"></div>
       </header>
 
-      {/* Instructions */}
-      <p className="text-center text-gray-500 text-sm py-2 px-4">
+      <p className="relative z-10 text-sm text-muted font-medium mb-2 px-3 py-2 bg-panel/60 border border-white/10 rounded-lg">
         Tap a square when you find someone who matches it.
       </p>
 
-      {/* Bingo indicator */}
       {hasBingo && (
-        <div className="bg-amber-100 text-amber-800 text-center py-2 font-semibold text-sm">
+        <div className="relative z-10 bg-bingo/20 text-bingo border border-bingo/40 text-center py-2 font-bold uppercase tracking-wider rounded-lg mb-3">
           🎉 BINGO! You got a line!
         </div>
       )}
 
-      {/* Board */}
-      <div className="flex-1 flex items-center justify-center p-3">
+      <div className="relative z-10 flex-1 p-2 md:p-4">
         <BingoBoard
           board={board}
           winningSquareIds={winningSquareIds}

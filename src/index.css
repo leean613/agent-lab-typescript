@@ -1,21 +1,48 @@
+﻿@import 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap';
 @import 'tailwindcss';
 
 @theme {
-  --color-accent: #2563eb;
-  --color-accent-light: #3b82f6;
-  --color-marked: #dcfce7;
-  --color-marked-border: #22c55e;
-  --color-bingo: #fbbf24;
+  --color-bg: #0d0f12;
+  --color-surface: #11161d;
+  --color-panel: #161f29;
+  --color-text: #f8fafc;
+  --color-muted: #a3b5c4;
+  --color-accent: #00d2ff;
+  --color-accent2: #ff4ec1;
+  --color-marked: #1d3248;
+  --color-marked-border: #00d2ff;
+  --color-bingo: #e0b639;
 }
 
-html,
-body,
-#root {
+html, body, #root {
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Space Grotesk', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background: radial-gradient(circle at 20% 0%, rgba(0,210,255,0.18) 0%, transparent 42%),
+              radial-gradient(circle at 80% 100%, rgba(255,78,193,0.18) 0%, transparent 48%),
+              linear-gradient(170deg, #0b1016 0%, #0f1724 100%);
+  color: var(--color-text);
   -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.grotesque-heading {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
 }

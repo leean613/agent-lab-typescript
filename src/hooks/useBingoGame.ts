@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { BingoSquareData, BingoLine, GameState } from '../types';
+import { useGameFlow } from './useGameFlow';
 import {
   generateBoard,
   toggleSquare,
@@ -140,16 +141,21 @@ function saveGameState(gameState: GameState, board: BingoSquareData[], winningLi
 export function useBingoGame(): BingoGameState & BingoGameActions {
   const loadedState = useMemo(() => loadGameState(), []);
 
-  const [gameState, setGameState] = useState<GameState>(
-    () => loadedState?.gameState || 'start'
-  );
+  const {
+    gameState,
+    setGameState,
+    showModal,
+    resetGame,
+    dismissModal,
+    announceWin,
+  } = useGameFlow(loadedState?.gameState || 'start');
+
   const [board, setBoard] = useState<BingoSquareData[]>(
     () => loadedState?.board || []
   );
   const [winningLine, setWinningLine] = useState<BingoLine | null>(
     () => loadedState?.winningLine || null
   );
-  const [showBingoModal, setShowBingoModal] = useState(false);
 
   const winningSquareIds = useMemo(
     () => getWinningSquareIds(winningLine),
@@ -165,47 +171,42 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     setBoard(generateBoard());
     setWinningLine(null);
     setGameState('playing');
-  }, []);
+  }, [setGameState]);
 
-  const handleSquareClick = useCallback((squareId: number) => {
-    setBoard((currentBoard) => {
-      const newBoard = toggleSquare(currentBoard, squareId);
-      
-      // Check for bingo after toggling
-      const bingo = checkBingo(newBoard);
-      if (bingo && !winningLine) {
-        // Schedule state updates to avoid synchronous setState in effect
-        queueMicrotask(() => {
-          setWinningLine(bingo);
-          setGameState('bingo');
-          setShowBingoModal(true);
-        });
-      }
-      
-      return newBoard;
-    });
-  }, [winningLine]);
+  const handleSquareClick = useCallback(
+    (squareId: number) => {
+      setBoard((currentBoard) => {
+        const newBoard = toggleSquare(currentBoard, squareId);
 
-  const resetGame = useCallback(() => {
-    setGameState('start');
+        const bingo = checkBingo(newBoard);
+        if (bingo && !winningLine) {
+          queueMicrotask(() => {
+            setWinningLine(bingo);
+            announceWin();
+          });
+        }
+
+        return newBoard;
+      });
+    },
+    [winningLine, announceWin]
+  );
+
+  const handleReset = useCallback(() => {
+    resetGame();
     setBoard([]);
     setWinningLine(null);
-    setShowBingoModal(false);
-  }, []);
-
-  const dismissModal = useCallback(() => {
-    setShowBingoModal(false);
-  }, []);
+  }, [resetGame]);
 
   return {
     gameState,
     board,
     winningLine,
     winningSquareIds,
-    showBingoModal,
+    showBingoModal: showModal,
     startGame,
     handleSquareClick,
-    resetGame,
+    resetGame: handleReset,
     dismissModal,
   };
 }

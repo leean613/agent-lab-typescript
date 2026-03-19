@@ -1,4 +1,4 @@
-import type { BingoSquareData } from '../types';
+﻿import type { BingoSquareData } from '../types';
 
 interface BingoSquareProps {
   square: BingoSquareData;
@@ -8,15 +8,15 @@ interface BingoSquareProps {
 
 export function BingoSquare({ square, isWinning, onClick }: BingoSquareProps) {
   const baseClasses =
-    'relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight';
+    'relative flex items-center justify-center p-3 text-center border rounded-xl transition-[transform,box-shadow] duration-150 select-none min-h-[70px] text-xs sm:text-sm leading-tight font-semibold tracking-tight';
 
   const stateClasses = square.isMarked
     ? isWinning
-      ? 'bg-amber-200 border-amber-400 text-amber-900'
-      : 'bg-marked border-marked-border text-green-800'
-    : 'bg-white text-gray-700 active:bg-gray-100';
+      ? 'bg-bingo/30 border-bingo text-bingo shadow-[0_0_0_2px_rgba(235,185,54,0.8)]'
+      : 'bg-marked border-marked-border text-accent shadow-[0_0_0_2px_rgba(0,210,255,0.55)]'
+    : 'bg-surface border-white/10 text-text hover:bg-surface/90 hover:scale-[1.02] active:scale-[0.99]';
 
-  const freeSpaceClasses = square.isFreeSpace ? 'font-bold text-sm' : '';
+  const freeSpaceClasses = square.isFreeSpace ? 'font-black text-accent2 text-sm tracking-widest uppercase' : '';
 
   return (
     <button
@@ -25,10 +25,11 @@ export function BingoSquare({ square, isWinning, onClick }: BingoSquareProps) {
       className={`${baseClasses} ${stateClasses} ${freeSpaceClasses}`}
       aria-pressed={square.isMarked}
       aria-label={square.isFreeSpace ? 'Free space' : square.text}
+      title={square.text}
     >
-      <span className="wrap-break-word hyphens-auto">{square.text}</span>
+      <span className="whitespace-pre-line break-words">{square.text}</span>
       {square.isMarked && !square.isFreeSpace && (
-        <span className="absolute top-0.5 right-0.5 text-green-600 text-xs">✓</span>
+        <span className="absolute top-1 right-1 text-xs text-accent2 font-bold">✓</span>
       )}
     </button>
   );
