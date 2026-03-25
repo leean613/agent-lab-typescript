@@ -4,7 +4,6 @@ import {
   toggleScavengerItem,
   calculateScavengerProgress,
   isScavengerComplete,
-  type ScavengerItem,
 } from './scavengerLogic';
 
 describe('scavengerLogic', () => {
